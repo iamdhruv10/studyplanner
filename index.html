@@ -209,6 +209,11 @@
         <h3>Add a New Task</h3>
         <input type="text" id="taskType" placeholder="Task Type (e.g., Project, Assignment)" />
         <input type="date" id="dueDate" />
+        <select id="priority">
+            <option value="high">High Priority</option>
+            <option value="medium">Medium Priority</option>
+            <option value="low">Low Priority</option>
+        </select>
         <button onclick="submitTask()">Add Task</button>
         <button onclick="closeTaskForm()">Cancel</button>
     </div>
@@ -236,6 +241,7 @@
     function submitTask() {
         const taskType = document.getElementById("taskType").value;
         const dueDateStr = document.getElementById("dueDate").value;
+        const priority = document.getElementById("priority").value;
         const dueDate = new Date(dueDateStr);
 
         if (!taskType || !dueDateStr) {
@@ -243,8 +249,17 @@
             return;
         }
 
-        tasks.push({ subject: currentSubject, taskType, dueDate });
-        tasks.sort((a, b) => a.dueDate - b.dueDate);
+        tasks.push({ subject: currentSubject, taskType, dueDate, priority });
+        tasks.sort((a, b) => {
+            // First, sort by priority (high > medium > low)
+            const priorityOrder = { high: 1, medium: 2, low: 3 };
+            if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+                return priorityOrder[a.priority] - priorityOrder[b.priority];
+            }
+            // If priorities are the same, then sort by due date
+            return a.dueDate - b.dueDate;
+        });
+
         closeTaskForm();
         displayTasks();
     }
@@ -285,6 +300,10 @@
                     let taskItem = document.createElement("div");
                     taskItem.classList.add("task-item");
                     taskItem.textContent = `${task.subject}: ${task.taskType}`;
+
+                    // Set the priority color
+                    taskItem.style.borderLeftColor = task.priority === "high" ? "red" : task.priority === "medium" ? "orange" : "green";
+
                     dayBlock.appendChild(taskItem);
                 });
             } else {
@@ -294,6 +313,8 @@
             taskList.appendChild(dayBlock);
         }
     }
+
+    
 </script>
 
 </body>
