@@ -121,9 +121,10 @@
             text-align: left;
             max-width: 1200px; /* Increased width for the calendar */
             margin: 30px auto;
-            display: grid;
-            grid-template-columns: repeat(7, 1fr); /* Seven columns for days of the week */
+            display: flex; /* Use flex to lay out items horizontally */
+            justify-content: space-between; /* Space out day blocks */
             gap: 20px; /* Increased gap for more space between days */
+            flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
         }
 
         #task-list h2 {
@@ -132,14 +133,14 @@
         }
 
         .calendar-day {
-            padding: 60px; /* Increased padding for wider blocks */
+            padding: 20px; /* Increased padding for wider blocks */
             background: #f9f9f9;
             border-radius: 8px;
             margin-bottom: 15px;
             transition: background-color 0.3s ease;
             height: 200px; /* Set height for each day block */
-            overflow-y: auto;
-            min-width: 600px; /* Increased width for each day block */
+            min-width: 120px; /* Increased width for each day block */
+            flex: 1 1 130px; /* Allow blocks to grow and shrink */
         }
 
         .calendar-day:hover {
@@ -175,7 +176,7 @@
             #task-list {
                 width: 90%;
                 padding: 15px;
-                grid-template-columns: 1fr; /* Display in a single column for mobile */
+                flex-direction: column; /* Stack day blocks vertically on mobile */
             }
         }
     </style>
