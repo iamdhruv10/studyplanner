@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Homepage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #d9d9d9;
+            text-align: center;
+        }
+        header {
+            background-color: #64bb6a;
+            color: white;
+            padding: 70px 0;
+            width: 100%;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            padding: 50px;
+        }
+        .game-container {
+            display: flex;
+            gap: 35px;
+        }
+        .game {
+            background-color: #94b4e8;
+            border-radius: 35px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 220px;
+            padding: 35px;
+            transition: transform 0.3s ease;
+        }
+        .game:hover {
+            transform: scale(1.05);
+        }
+        .game button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 25px;
+            width: 100%;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .game button:hover {
+            background-color: #45a049;
+        }
+        #task-list {
+            width: 60%;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        .task-item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Managime</h1>
+    <h2>Manage your time with this smart and innovative website</h2>
+</header>
+
+<div class="main-container">
+    <div class="game-container">
+        <div class="game">
+            <button onclick="addTask('Math')">Math</button>
+        </div>
+        <div class="game">
+            <button onclick="addTask('History')">History</button>
+        </div>
+        <div class="game">
+            <button onclick="addTask('Science')">Science</button>
+        </div>
+        <div class="game">
+            <button onclick="addTask('English')">English</button>
+        </div>
+    </div>
+
+    <div id="task-list">
+        <h2>Task List</h2>
+        <div id="tasks"></div>
+    </div>
+</div>
+
+<script>
+    let tasks = [];
+
+    function addTask(subject) {
+        while (true) {
+            let taskType = prompt(`Enter the type of task for ${subject} (Project, Assignment, etc.), or type 'stop' to finish:`);
+            if (!taskType || taskType.toLowerCase() === 'stop') break;
+
+            let dueDateStr = prompt(`Enter the due date for ${subject} (YYYY-MM-DD):`);
+            let dueDate = new Date(dueDateStr);
+
+            if (isNaN(dueDate.getTime())) {
+                alert("Invalid date format. Please use YYYY-MM-DD.");
+                continue;
+            }
+
+            tasks.push({ subject, taskType, dueDate, dueDateStr });
+
+            tasks.sort((a, b) => a.dueDate - b.dueDate);
+
+            displayTasks();
+        }
+    }
+
+    function displayTasks() {
+        const taskList = document.getElementById("tasks");
+        taskList.innerHTML = "";
+
+        tasks.forEach(task => {
+            let taskItem = document.createElement("div");
+            taskItem.classList.add("task-item");
+            taskItem.textContent = `${task.subject}: ${task.taskType} (Due: ${task.dueDateStr})`;
+            taskList.appendChild(taskItem);
+        });
+    }
+</script>
+
+</body>
+</html>
