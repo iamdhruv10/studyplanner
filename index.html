@@ -3,67 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Homepage</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
+    <title>Managime</title>
+    <style>        
+        /* Basic Reset */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #d9d9d9;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f7f7f7;
             text-align: center;
+            color: #333;
+            line-height: 1.5;
         }
         header {
-            background-color: #64bb6a;
+            background-color: #0066ff;
             color: white;
-            padding: 70px 0;
-            width: 100%;
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 3px solid #0044cc;
         }
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        header h2 {
+            font-size: 1.5rem;
+            opacity: 0.8;
+        }
+
         .main-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 30px;
-            padding: 50px;
+            gap: 40px;
+            padding: 30px;
         }
+
+        /* Game Buttons Styling */
         .game-container {
             display: flex;
-            gap: 35px;
+            gap: 30px;
+            justify-content: center;
         }
         .game {
-            background-color: #94b4e8;
-            border-radius: 35px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #3b76e1;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
             width: 220px;
-            padding: 35px;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .game:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 18px rgba(0, 0, 0, 0.2);
         }
         .game button {
-            background-color: #4CAF50;
-            color: white;
+            background-color: #ffffff;
+            color: #3b76e1;
             border: none;
-            padding: 25px;
+            padding: 15px;
             width: 100%;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-transform: uppercase;
         }
         .game button:hover {
-            background-color: #45a049;
+            background-color: #e0f1ff;
         }
+
+        /* Calendar Styling */
         #task-list {
-            width: 60%;
+            width: 80%;
             background: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
             text-align: left;
+            max-width: 600px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr); /* Seven columns for days of the week */
+            gap: 20px;
         }
+
+        #task-list h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .calendar-day {
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: background-color 0.3s ease;
+            height: 200px; /* Set height for each day block */
+            overflow-y: auto;
+        }
+
+        .calendar-day:hover {
+            background-color: #e8f3ff;
+        }
+
+        .calendar-day h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
         .task-item {
-            padding: 10px;
-            border-bottom: 1px solid #ccc;
+            background-color: #f0f0f0;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border-left: 4px solid #0066ff;
+        }
+
+        /* Mobile Styling */
+        @media screen and (max-width: 600px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            .game-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .game {
+                width: 85%;
+                padding: 20px;
+            }
+            #task-list {
+                width: 90%;
+                padding: 15px;
+                grid-template-columns: 1fr; /* Display in a single column for mobile */
+            }
         }
     </style>
 </head>
@@ -75,6 +153,7 @@
 </header>
 
 <div class="main-container">
+    <!-- Buttons for Subjects -->
     <div class="game-container">
         <div class="game">
             <button onclick="addTask('Math')">Math</button>
@@ -90,8 +169,9 @@
         </div>
     </div>
 
+    <!-- Task Calendar -->
     <div id="task-list">
-        <h2>Task List</h2>
+        <h2>Task Calendar</h2>
         <div id="tasks"></div>
     </div>
 </div>
@@ -102,18 +182,18 @@
     function addTask(subject) {
         while (true) {
             let taskType = prompt(`Enter the type of task for ${subject} (Project, Assignment, etc.), or type 'stop' to finish:`);
+
             if (!taskType || taskType.toLowerCase() === 'stop') break;
 
-            let dueDateStr = prompt(`Enter the due date for ${subject} (YYYY-MM-DD):`);
+            let dueDateStr = prompt(`Enter the due date for ${subject} (MM-DD-YYYY):`);
             let dueDate = new Date(dueDateStr);
 
             if (isNaN(dueDate.getTime())) {
-                alert("Invalid date format. Please use YYYY-MM-DD.");
+                alert("Invalid date format. Please use MM-DD-YYYY.");
                 continue;
             }
 
             tasks.push({ subject, taskType, dueDate, dueDateStr });
-
             tasks.sort((a, b) => a.dueDate - b.dueDate);
 
             displayTasks();
@@ -124,12 +204,49 @@
         const taskList = document.getElementById("tasks");
         taskList.innerHTML = "";
 
+        // Create a dictionary to hold tasks grouped by date
+        const groupedTasks = {};
+
         tasks.forEach(task => {
-            let taskItem = document.createElement("div");
-            taskItem.classList.add("task-item");
-            taskItem.textContent = `${task.subject}: ${task.taskType} (Due: ${task.dueDateStr})`;
-            taskList.appendChild(taskItem);
+            const dateKey = task.dueDate.toISOString().split('T')[0]; // Get the date as a string (YYYY-MM-DD)
+            if (!groupedTasks[dateKey]) {
+                groupedTasks[dateKey] = [];
+            }
+            groupedTasks[dateKey].push(task);
         });
+
+        // Loop through grouped tasks and display them on the calendar
+        const daysInWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const startOfWeek = new Date();
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Start from the previous Sunday
+
+        // Create each day block
+        for (let i = 0; i < 7; i++) {
+            const currentDay = new Date(startOfWeek);
+            currentDay.setDate(currentDay.getDate() + i);
+
+            const dateKey = currentDay.toISOString().split('T')[0];
+            const tasksForDay = groupedTasks[dateKey] || [];
+
+            let dayBlock = document.createElement("div");
+            dayBlock.classList.add("calendar-day");
+
+            const dateString = `${daysInWeek[currentDay.getDay()]} ${currentDay.toLocaleDateString()}`;
+            dayBlock.innerHTML = `<h3>${dateString}</h3>`;
+
+            if (tasksForDay.length > 0) {
+                tasksForDay.forEach(task => {
+                    let taskItem = document.createElement("div");
+                    taskItem.classList.add("task-item");
+                    taskItem.textContent = `${task.subject}: ${task.taskType}`;
+                    dayBlock.appendChild(taskItem);
+                });
+            } else {
+                dayBlock.innerHTML += "<p>No tasks for today.</p>";
+            }
+
+            taskList.appendChild(dayBlock);
+        }
     }
 </script>
 
