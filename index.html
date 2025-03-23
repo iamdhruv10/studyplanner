@@ -113,17 +113,17 @@
 
         /* Calendar Styling */
         #task-list {
-            width: 80%;
+            width: 100%; /* Adjusted to make the calendar wider */
             background: white;
             padding: 25px;
             border-radius: 15px;
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
             text-align: left;
-            max-width: 600px;
+            max-width: 1200px; /* Increased width for the calendar */
             margin: 30px auto;
             display: grid;
             grid-template-columns: repeat(7, 1fr); /* Seven columns for days of the week */
-            gap: 20px;
+            gap: 20px; /* Increased gap for more space between days */
         }
 
         #task-list h2 {
@@ -132,13 +132,14 @@
         }
 
         .calendar-day {
-            padding: 12px;
+            padding: 15px; /* Increased padding for wider blocks */
             background: #f9f9f9;
             border-radius: 8px;
             margin-bottom: 15px;
             transition: background-color 0.3s ease;
             height: 200px; /* Set height for each day block */
             overflow-y: auto;
+            min-width: 120px; /* Increased width for each day block */
         }
 
         .calendar-day:hover {
