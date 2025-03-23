@@ -77,6 +77,40 @@
             background-color: #e0f1ff;
         }
 
+        /* Task Form Styling */
+        .task-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        .task-form input, .task-form select {
+            padding: 12px;
+            width: 100%;
+            font-size: 1em;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        .task-form button {
+            background-color: #0066ff;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+        }
+        .task-form button:hover {
+            background-color: #0044cc;
+        }
+
         /* Calendar Styling */
         #task-list {
             width: 80%;
@@ -156,17 +190,26 @@
     <!-- Buttons for Subjects -->
     <div class="game-container">
         <div class="game">
-            <button onclick="addTask('Math')">Math</button>
+            <button onclick="openTaskForm('Math')">Math</button>
         </div>
         <div class="game">
-            <button onclick="addTask('History')">History</button>
+            <button onclick="openTaskForm('History')">History</button>
         </div>
         <div class="game">
-            <button onclick="addTask('Science')">Science</button>
+            <button onclick="openTaskForm('Science')">Science</button>
         </div>
         <div class="game">
-            <button onclick="addTask('English')">English</button>
+            <button onclick="openTaskForm('English')">English</button>
         </div>
+    </div>
+
+    <!-- Task Input Form -->
+    <div class="task-form" id="task-form" style="display:none;">
+        <h3>Add a New Task</h3>
+        <input type="text" id="taskType" placeholder="Task Type (e.g., Project, Assignment)" />
+        <input type="date" id="dueDate" />
+        <button onclick="submitTask()">Add Task</button>
+        <button onclick="closeTaskForm()">Cancel</button>
     </div>
 
     <!-- Task Calendar -->
@@ -178,49 +221,51 @@
 
 <script>
     let tasks = [];
+    let currentSubject = "";
 
-    function addTask(subject) {
-        while (true) {
-            let taskType = prompt(`Enter the type of task for ${subject} (Project, Assignment, etc.), or type 'stop' to finish:`);
+    function openTaskForm(subject) {
+        currentSubject = subject;
+        document.getElementById("task-form").style.display = "block";
+    }
 
-            if (!taskType || taskType.toLowerCase() === 'stop') break;
+    function closeTaskForm() {
+        document.getElementById("task-form").style.display = "none";
+    }
 
-            let dueDateStr = prompt(`Enter the due date for ${subject} (MM-DD-YYYY):`);
-            let dueDate = new Date(dueDateStr);
+    function submitTask() {
+        const taskType = document.getElementById("taskType").value;
+        const dueDateStr = document.getElementById("dueDate").value;
+        const dueDate = new Date(dueDateStr);
 
-            if (isNaN(dueDate.getTime())) {
-                alert("Invalid date format. Please use MM-DD-YYYY.");
-                continue;
-            }
-
-            tasks.push({ subject, taskType, dueDate, dueDateStr });
-            tasks.sort((a, b) => a.dueDate - b.dueDate);
-
-            displayTasks();
+        if (!taskType || !dueDateStr) {
+            alert("Please fill in all fields.");
+            return;
         }
+
+        tasks.push({ subject: currentSubject, taskType, dueDate });
+        tasks.sort((a, b) => a.dueDate - b.dueDate);
+        closeTaskForm();
+        displayTasks();
     }
 
     function displayTasks() {
         const taskList = document.getElementById("tasks");
         taskList.innerHTML = "";
 
-        // Create a dictionary to hold tasks grouped by date
         const groupedTasks = {};
 
         tasks.forEach(task => {
-            const dateKey = task.dueDate.toISOString().split('T')[0]; // Get the date as a string (YYYY-MM-DD)
+            const dateKey = task.dueDate.toISOString().split('T')[0];
             if (!groupedTasks[dateKey]) {
                 groupedTasks[dateKey] = [];
             }
             groupedTasks[dateKey].push(task);
         });
 
-        // Loop through grouped tasks and display them on the calendar
         const daysInWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         const startOfWeek = new Date();
-        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Start from the previous Sunday
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
 
-        // Create each day block
         for (let i = 0; i < 7; i++) {
             const currentDay = new Date(startOfWeek);
             currentDay.setDate(currentDay.getDate() + i);
